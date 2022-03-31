@@ -109,7 +109,7 @@ namespace Alura.ByteBank.Infraestrutura.Testes
             Assert.True(atualizado);
         }
 
-        [Fact]
+        [Fact(Skip = "Precisa refatorar para ser independente")]
         public void TestaRemoverInformacaoDeterminadaAgencia()
         {
             //Arrange
