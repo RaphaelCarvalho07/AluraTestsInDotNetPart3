@@ -123,5 +123,43 @@ namespace Alura.ByteBank.WebApp.Testes
             Assert.Contains("401", driver.PageSource);
             driver.Close();
         }
+
+        [Fact]
+        public void RealizarLoginAcessaMenuECadastraCliente()
+        {
+            // Arrange
+            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+
+            driver.Navigate().GoToUrl("https://localhost:44309/UsuarioApps/Login");
+
+            var login = driver.FindElement(By.Name("Email"));
+            var senha = driver.FindElement(By.Name("Senha"));
+
+            login.SendKeys("andre@email.com");
+            senha.SendKeys("senha01");
+
+            driver.FindElement(By.Id("btn-logar")).Click();
+
+            driver.FindElement(By.LinkText("Cliente")).Click();
+
+            driver.FindElement(By.LinkText("Adicionar Cliente")).Click();
+
+            driver.FindElement(By.Name("Identificador")).Click();
+            driver.FindElement(By.Name("Identificador")).SendKeys("2df71922-ca7d-4d43-b142-0767b32f822a");
+            driver.FindElement(By.Name("CPF")).Click();
+            driver.FindElement(By.Name("CPF")).SendKeys("69981034096");
+            driver.FindElement(By.Name("Nome")).Click();
+            driver.FindElement(By.Name("Nome")).SendKeys("Aegon Tagaryen");
+            driver.FindElement(By.Name("Profissao")).Click();
+            driver.FindElement(By.Name("Profissao")).SendKeys("Cientista");
+
+            // Act
+            driver.FindElement(By.CssSelector(".btn-primary")).Click();
+            driver.FindElement(By.LinkText("Home")).Click();
+
+            // Assert
+            Assert.Contains("Logout", driver.PageSource);
+            driver.Close();
+        }
     }
 }
