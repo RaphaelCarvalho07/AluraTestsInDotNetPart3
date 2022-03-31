@@ -24,6 +24,7 @@ namespace Alura.ByteBank.WebApp.Testes
 
             // Assert
             Assert.Contains("WebApp", driver.Title);
+            driver.Close();
         }
 
         [Fact]
@@ -38,6 +39,7 @@ namespace Alura.ByteBank.WebApp.Testes
             // Assert
             Assert.Contains("Login", driver.PageSource);
             Assert.Contains("Home", driver.PageSource);
+            driver.Close();
         }
 
         [Fact]
@@ -46,7 +48,7 @@ namespace Alura.ByteBank.WebApp.Testes
             // Arrange
             IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
-
+            //Act
             driver.Navigate().GoToUrl("https://localhost:44309/");
             driver.Manage().Window.Size = new System.Drawing.Size(1920, 1080);
             driver.FindElement(By.LinkText("Login")).Click();
@@ -56,6 +58,23 @@ namespace Alura.ByteBank.WebApp.Testes
             driver.FindElement(By.Id("Senha")).SendKeys("senha01");
             driver.FindElement(By.Id("btn-logar")).Click();
             driver.FindElement(By.CssSelector(".btn")).Click();
+            driver.Close();
+        }
+
+        [Fact]
+        public void ValidaLinkDeLoginNaHome()
+        {
+            // Arrange
+            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            driver.Navigate().GoToUrl("https://localhost:44309/");
+
+            var linkLogin = driver.FindElement(By.LinkText("Login"));
+
+            // Act
+            linkLogin.Click();
+            
+            // Assert
+            Assert.Contains("img", driver.PageSource);
             driver.Close();
         }
     }
