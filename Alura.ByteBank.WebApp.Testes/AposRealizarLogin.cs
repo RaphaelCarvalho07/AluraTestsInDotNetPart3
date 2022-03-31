@@ -1,4 +1,5 @@
-﻿using OpenQA.Selenium;
+﻿using Alura.ByteBank.WebApp.Testes.PageObjects;
+using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using System;
 using System.Collections.Generic;
@@ -27,18 +28,12 @@ namespace Alura.ByteBank.WebApp.Testes
         public void AposRealizarLoginVerificaSeExisteOpcaoAgenciaMenu()
         {
             // Arrange
-            // IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            var loginPO = new LoginPO(driver);
+            loginPO.Navegar("https://localhost:44309/UsuarioApps/Login");
 
-            driver.Navigate().GoToUrl("https://localhost:44309/UsuarioApps/Login");
-            var login = driver.FindElement(By.Id("Email")); // Selecionar elementos no HTML
-            var senha = driver.FindElement(By.Id("Senha")); // Selecionar elementos no HTML
-            var btnLogar = driver.FindElement(By.Id("btn-logar")); // Selecionar elementos no HTML
-
-            login.SendKeys("andre@email.com");
-            senha.SendKeys("senha01");
-
-            // Act - faz o login
-            btnLogar.Click();
+            // Act
+            loginPO.PreencherCampos("andre@email.com", "senha01");
+            loginPO.btnClick();
 
             // Assert
             Assert.Contains("Agência", driver.PageSource);
