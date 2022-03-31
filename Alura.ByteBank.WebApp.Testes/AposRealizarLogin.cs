@@ -44,18 +44,12 @@ namespace Alura.ByteBank.WebApp.Testes
         public void TentaRealizarLoginSemPreencherCampos()
         {
             // Arrange
-            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            var loginPO = new LoginPO(driver);
+            loginPO.Navegar("https://localhost:44309/UsuarioApps/Login");
 
-            driver.Navigate().GoToUrl("https://localhost:44309/UsuarioApps/Login");
-            var login = driver.FindElement(By.Id("Email")); // Selecionar elementos no HTML
-            var senha = driver.FindElement(By.Id("Senha")); // Selecionar elementos no HTML
-            var btnLogar = driver.FindElement(By.Id("btn-logar")); // Selecionar elementos no HTML
-
-            // login.SendKeys("andre@email.com");
-            // senha.SendKeys("senha01");
-
-            // Act - faz o login
-            btnLogar.Click();
+            // Act
+            loginPO.PreencherCampos("", "");
+            loginPO.btnClick();
 
             // Assert
             Assert.Contains("The Email field is required.", driver.PageSource);
@@ -67,18 +61,12 @@ namespace Alura.ByteBank.WebApp.Testes
         public void TentaRealiarLoginComSenhaInvalida()
         {
             // Arrange
-            // IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            var loginPO = new LoginPO(driver);
+            loginPO.Navegar("https://localhost:44309/UsuarioApps/Login");
 
-            driver.Navigate().GoToUrl("https://localhost:44309/UsuarioApps/Login");
-            var login = driver.FindElement(By.Id("Email")); // Selecionar elementos no HTML
-            var senha = driver.FindElement(By.Id("Senha")); // Selecionar elementos no HTML
-            var btnLogar = driver.FindElement(By.Id("btn-logar")); // Selecionar elementos no HTML
-
-            login.SendKeys("andre@email.com");
-            senha.SendKeys("senha010"); // Senha inválida
-
-            // Act - faz o login
-            btnLogar.Click();
+            // Act
+            loginPO.PreencherCampos("andre@email.com", "senha010");
+            loginPO.btnClick();
 
             // Assert
             Assert.Contains("Login", driver.PageSource);
@@ -133,17 +121,12 @@ namespace Alura.ByteBank.WebApp.Testes
         public void RealizarLoginAcessaMenuECadastraCliente()
         {
             // Arrange
-            // IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            var loginPO = new LoginPO(driver);
+            loginPO.Navegar("https://localhost:44309/UsuarioApps/Login");
 
-            driver.Navigate().GoToUrl("https://localhost:44309/UsuarioApps/Login");
-
-            var login = driver.FindElement(By.Name("Email"));
-            var senha = driver.FindElement(By.Name("Senha"));
-
-            login.SendKeys("andre@email.com");
-            senha.SendKeys("senha01");
-
-            driver.FindElement(By.Id("btn-logar")).Click();
+            // Act
+            loginPO.PreencherCampos("andre@email.com", "senha01");
+            loginPO.btnClick();
 
             driver.FindElement(By.LinkText("Cliente")).Click();
 
@@ -171,14 +154,12 @@ namespace Alura.ByteBank.WebApp.Testes
         public void RealizarLoginAcessaListagemDeContas()
         {
             // Arrange
-            // IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            var loginPO = new LoginPO(driver);
+            loginPO.Navegar("https://localhost:44309/UsuarioApps/Login");
 
-            driver.Navigate().GoToUrl("https://localhost:44309/UsuarioApps/Login");
-            var login = driver.FindElement(By.Name("Email"));
-            var senha = driver.FindElement(By.Name("Senha"));
-            login.SendKeys("andre@email.com");
-            senha.SendKeys("senha01");
-            driver.FindElement(By.Id("btn-logar")).Click();
+            // Act
+            loginPO.PreencherCampos("andre@email.com", "senha01");
+            loginPO.btnClick();
 
             // Act - Conta Corrente
             driver.FindElement(By.Id("contacorrente")).Click();
@@ -193,6 +174,25 @@ namespace Alura.ByteBank.WebApp.Testes
 
             // Assert
             Assert.Contains("Voltar", driver.PageSource);
+            driver.Close();
+        }
+
+        [Fact]
+        public void RealizarLoginAcessaListagemDeContasUsandoHomePO()
+        {
+            // Arrange
+            var LoginPO = new LoginPO(driver);
+            LoginPO.Navegar("https://localhost:44309/UsuarioApps/Login");
+
+            // Act
+            LoginPO.PreencherCampos("andre@email.com", "senha01");
+            LoginPO.btnClick();
+
+            var homePO = new HomePO(driver);
+            homePO.LinkContaCorrenteClick();
+
+            // Assert
+            Assert.Contains("Adicionar Conta-Corrente", driver.PageSource);
             driver.Close();
         }
     }
