@@ -8,16 +8,26 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Alura.ByteBank.WebApp.Testes
 {
     public class AposRealizarLogin
     {
+        private IWebDriver driver;
+        public ITestOutputHelper SaidaConsoleTeste;
+
+        public AposRealizarLogin(ITestOutputHelper _saidaConsoleTeste)
+        {
+            driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            SaidaConsoleTeste = _saidaConsoleTeste;
+        }
+
         [Fact]
         public void AposRealizarLoginVerificaSeExisteOpcaoAgenciaMenu()
         {
             // Arrange
-            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            // IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
             driver.Navigate().GoToUrl("https://localhost:44309/UsuarioApps/Login");
             var login = driver.FindElement(By.Id("Email")); // Selecionar elementos no HTML
@@ -62,7 +72,7 @@ namespace Alura.ByteBank.WebApp.Testes
         public void TentaRealiarLoginComSenhaInvalida()
         {
             // Arrange
-            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            // IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
             driver.Navigate().GoToUrl("https://localhost:44309/UsuarioApps/Login");
             var login = driver.FindElement(By.Id("Email")); // Selecionar elementos no HTML
@@ -84,7 +94,7 @@ namespace Alura.ByteBank.WebApp.Testes
         public void TentaAcessarPaginaSemEstarLogado()
         {
             // Arrange
-            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            // IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
             driver.Navigate().GoToUrl("https://localhost:44309/Agencia/index");
             // Act
@@ -98,7 +108,7 @@ namespace Alura.ByteBank.WebApp.Testes
         public void AcessaPaginaSemEstarLogadoVerificaURL()
         {
             // Arrange
-            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            // IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
             // Act
             driver.Navigate().GoToUrl("https://localhost:44309/Agencia/index");
@@ -113,7 +123,7 @@ namespace Alura.ByteBank.WebApp.Testes
         public void TentaAcessarPaginaDeContaCorrenteSemEstarLogado()
         {
             // Arrange
-            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            // IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
             // Act
             driver.Navigate().GoToUrl("https://localhost:44309/ContaCorrentes/Index");
@@ -128,7 +138,7 @@ namespace Alura.ByteBank.WebApp.Testes
         public void RealizarLoginAcessaMenuECadastraCliente()
         {
             // Arrange
-            IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            // IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
 
             driver.Navigate().GoToUrl("https://localhost:44309/UsuarioApps/Login");
 
@@ -159,6 +169,35 @@ namespace Alura.ByteBank.WebApp.Testes
 
             // Assert
             Assert.Contains("Logout", driver.PageSource);
+            driver.Close();
+        }
+
+        [Fact]
+        public void RealizarLoginAcessaListagemDeContas()
+        {
+            // Arrange
+            // IWebDriver driver = new ChromeDriver(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+
+            driver.Navigate().GoToUrl("https://localhost:44309/UsuarioApps/Login");
+            var login = driver.FindElement(By.Name("Email"));
+            var senha = driver.FindElement(By.Name("Senha"));
+            login.SendKeys("andre@email.com");
+            senha.SendKeys("senha01");
+            driver.FindElement(By.Id("btn-logar")).Click();
+
+            // Act - Conta Corrente
+            driver.FindElement(By.Id("contacorrente")).Click();
+
+            IReadOnlyCollection<IWebElement> elements = driver.FindElements(By.TagName("a"));
+
+            var elemento = (from webElemento in elements
+                            where webElemento.Text.Contains("Detalhes")
+                            select webElemento).First();
+
+            elemento.Click();
+
+            // Assert
+            Assert.Contains("Voltar", driver.PageSource);
             driver.Close();
         }
     }
